@@ -1,4 +1,4 @@
-export type Mail = {
+export interface MsgFull {
   config: {
     url: string;
     method: string;
@@ -70,4 +70,4 @@ export type Mail = {
   request: {
     responseURL: string;
   };
-};
+}
