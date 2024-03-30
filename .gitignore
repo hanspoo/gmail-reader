@@ -4,3 +4,4 @@ node_modules
 mails.json
 dist
 messages
+.env

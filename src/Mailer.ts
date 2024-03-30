@@ -15,8 +15,8 @@
  */
 /* eslint-disable camelcase */
 
-import { MsgBasic } from "../types/MsgBasic";
-import { MsgFull } from "../types/MsgFull";
+import { MsgBasic } from "./types/MsgBasic";
+import { MsgFull } from "./types/MsgFull";
 
 // [START gmail_quickstart]
 
@@ -40,7 +40,7 @@ const CREDENTIALS_PATH = path.join(process.cwd(), "credentials.json");
 
 export class Mailer {
   folder: string;
-  constructor(public userId: string) {
+  constructor(public userId: string, public debug: boolean) {
     this.folder = process.env.MSG_FOLDER || `${process.env.HOME}/messages`;
     this.userId = userId;
   }
@@ -149,7 +149,9 @@ export class Mailer {
 
   saveCache(msgId: string, payload: MsgFull): void {
     const file = `${this.msgPath()}/${msgId}.json`;
-    console.log(`guardando mensaje ${file}`);
+    if (this.debug) {
+      console.log(`guardando mensaje ${file}`);
+    }
     fs.writeFile(file, JSON.stringify(payload));
   }
 
@@ -157,7 +159,9 @@ export class Mailer {
     const file = `${this.msgPath()}/${msgId}.json`;
     try {
       await fs.access(file, fs.constants.F_OK);
-      console.log(`cache hit ${file}`);
+      if (this.debug) {
+        console.log(`cache hit ${file}`);
+      }
       const data = await fs.readFile(file);
       return JSON.parse(data.toString()) as unknown as MsgFull;
     } catch {
