@@ -109,24 +109,37 @@ export class Mailer {
     }
   }
 
-  async find(maxResults = 100): Promise<Array<MsgFull>> {
+  async find(
+    from: string,
+    subject: string,
+    maxResults = 100
+  ): Promise<Array<MsgFull>> {
     await this.createFolders();
     if (!this.auth) {
       this.auth = await this.authorize();
     }
     const gmail = google.gmail({ version: "v1", auth: this.auth });
+
+    const q = [];
+    if (from) q.push(`from:${from}`);
+    if (subject) q.push(`subject:${subject}`);
+
     const res = await gmail.users.messages.list({
       userId: this.userId,
       maxResults,
+      q: q.join(","),
     });
 
     const messages = res.data.messages as Array<MsgBasic>;
 
     const list: Array<MsgFull> = [];
 
+    if (process.env.DEBUG) console.log(`${messages.length} messages`);
+
     MESSAGE: for (const m of messages) {
       const msg = await this.loadFromCache(m.id);
       if (msg) {
+        // if (process.env.DEBUG) console.log(`cache hit`);
         list.push(msg);
         continue MESSAGE;
       }
