@@ -9,8 +9,12 @@
     "dev": "nodemon src/index.ts",
     "test": "jest"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "gmail",
+    "emails",
+    "typescript"
+  ],
+  "author": "hans poo",
   "license": "ISC",
   "dependencies": {
     "@google-cloud/local-auth": "^2.1.0",
